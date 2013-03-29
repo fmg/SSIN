@@ -122,9 +122,7 @@ public class InitialScreen extends javax.swing.JFrame {
                 new EncriptionScreen().setVisible(true);
             }
             });
-            
-            System.out.println("Vai fechar esta janela");
-            
+                       
         }else{
             cardSelection_CB.setEnabled(true);
         }

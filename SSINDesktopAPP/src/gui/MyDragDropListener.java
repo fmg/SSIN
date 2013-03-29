@@ -11,6 +11,8 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -60,6 +62,12 @@ class MyDragDropListener implements DropTargetListener {
                         System.out.println("File path is '" + file.getPath() + "'.");
                         dropFile_Tlabel.setText(file.getPath());
                         dropFile_Tlabel.setEnabled(true);
+                        for(ActionListener a: dropFile_Tlabel.getActionListeners()) {
+                            a.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null) {
+                                  //Nothing need go here, the actionPerformed method (with the
+                                  //above arguments) will trigger the respective listener
+                            });
+                        }
                         }else{
                              System.out.println("Not a file");
 
