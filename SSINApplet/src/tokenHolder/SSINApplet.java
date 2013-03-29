@@ -22,9 +22,10 @@ public class SSINApplet extends Applet implements AppletEvent{
      ****************************************************/
     
     
-    final static byte GET_SECRET_KEY = (byte)0x10;
-    final static byte SET_SECRET_KEY = (byte)0x30;
+    final static byte GET_SECRET_KEYS = (byte)0x10;
     
+    final static byte SET_SECRET_KEYS = (byte)0x30;
+    final static byte SET_CARD_PIN = (byte)0x31;
     
      /****************************************************
      * ERROR codes definitions                         *
@@ -46,8 +47,8 @@ public class SSINApplet extends Applet implements AppletEvent{
     
     //Keys
     final static byte SECRET_KEY_LENGTH = (byte)24;
-    byte[] secretKey; //3DES secret key
-    
+    byte[] encryptionSecretKey; //3DES secret key
+    byte[] signingSecretKey; //3DES secret key
     
     
     private short[] transientBufferOffset;
@@ -88,10 +89,11 @@ public class SSINApplet extends Applet implements AppletEvent{
         
         
         cardPin = new OwnerPIN(PIN_LIMIT, CARD_PIN_LENGTH);
-        secretKey = new byte[SECRET_KEY_LENGTH];
+        encryptionSecretKey = new byte[SECRET_KEY_LENGTH];
+        signingSecretKey = new byte[SECRET_KEY_LENGTH];
         
         
-        transientBuffer = JCSystem.makeTransientByteArray(TRANSIENT_BUFFER_LENGTH, JCSystem.CLEAR_ON_RESET);
+        transientBuffer = new byte[TRANSIENT_BUFFER_LENGTH];
         transientBufferCurrentLenght = (short)0;
         
         transientBufferOffset = JCSystem.makeTransientShortArray((short)4, JCSystem.CLEAR_ON_RESET);
@@ -127,13 +129,14 @@ public class SSINApplet extends Applet implements AppletEvent{
         switch(buffer[ISO7816.OFFSET_INS]){
             
             
-            case SET_SECRET_KEY:    card_set_secret_key(apdu, buffer);
+            case SET_SECRET_KEYS:    card_set_secret_keys(apdu, buffer);
                                     break;
                 
-            case GET_SECRET_KEY:    card_get_secret_key(apdu, buffer);
+            case GET_SECRET_KEYS:    card_get_secret_keys(apdu, buffer);
                                     break;
                             
-                
+            case SET_CARD_PIN:  card_set_pin(apdu, buffer);
+                                break;
                 
             
             
@@ -163,24 +166,25 @@ public class SSINApplet extends Applet implements AppletEvent{
      **************************************************************************/
     
     
-    private void card_set_secret_key(APDU apdu, byte[] buffer) {
+    private void card_set_secret_keys(APDU apdu, byte[] buffer) {
         
         apdu.setIncomingAndReceive();
         short Lc = apdu.getIncomingLength();
         
         
-        if(Lc != (CARD_PIN_LENGTH + SECRET_KEY_LENGTH)){
+        if(Lc != (short)(CARD_PIN_LENGTH + 2*SECRET_KEY_LENGTH)){
             cardPin.check(buffer, (short)0, CARD_PIN_LENGTH); //make the pin miss, by passing apdu parameters
             ISOException.throwIt(SW_MALFORMED_MSG);
         }
         
-        if(cardPin.check(buffer, apdu.getOffsetCdata(), CARD_PIN_LENGTH)){
+        if(!cardPin.check(buffer, apdu.getOffsetCdata(), CARD_PIN_LENGTH)){
             ISOException.throwIt(SW_WRONG_PIN);
         }
 
         try{
             JCSystem.beginTransaction();
-            Util.arrayCopy(buffer, (short)(apdu.getOffsetCdata() + CARD_PIN_LENGTH), secretKey, (short)0, SECRET_KEY_LENGTH);
+            Util.arrayCopy(buffer, (short)(apdu.getOffsetCdata() + CARD_PIN_LENGTH), encryptionSecretKey, (short)0, SECRET_KEY_LENGTH);
+            Util.arrayCopy(buffer, (short)(apdu.getOffsetCdata() + CARD_PIN_LENGTH + SECRET_KEY_LENGTH), signingSecretKey, (short)0, SECRET_KEY_LENGTH);
             JCSystem.commitTransaction();
         }catch(Exception ex){
             JCSystem.abortTransaction();
@@ -193,7 +197,8 @@ public class SSINApplet extends Applet implements AppletEvent{
 
     
     
-    private void card_get_secret_key(APDU apdu, byte[] buffer) {
+    private void card_get_secret_keys(APDU apdu, byte[] buffer) {
+        
         apdu.setIncomingAndReceive();
         short Lc = apdu.getIncomingLength();
         
@@ -202,15 +207,28 @@ public class SSINApplet extends Applet implements AppletEvent{
             ISOException.throwIt(SW_MALFORMED_MSG);
         }
         
-        if(cardPin.check(buffer, apdu.getOffsetCdata(), CARD_PIN_LENGTH)){
-            ISOException.throwIt(SW_WRONG_PIN);
-        }
 
-        Util.arrayCopy(secretKey, (short)0, buffer, (short)0, SECRET_KEY_LENGTH);
-        apdu.setOutgoingAndSend((short)0, SECRET_KEY_LENGTH);
+        Util.arrayCopy(encryptionSecretKey, (short)0, buffer, (short)0, SECRET_KEY_LENGTH);
+        Util.arrayCopy(signingSecretKey, (short)0, buffer, SECRET_KEY_LENGTH, SECRET_KEY_LENGTH);
+        apdu.setOutgoingAndSend((short)0, (short)(2*SECRET_KEY_LENGTH));
         
     }
 
+    
+    private void card_set_pin(APDU apdu, byte[] buffer){
+        apdu.setIncomingAndReceive();
+        short Lc = apdu.getIncomingLength();
+        
+        
+        if(Lc != CARD_PIN_LENGTH){
+            ISOException.throwIt(SW_MALFORMED_MSG);
+        }
+        
+        
+        cardPin.update(buffer, apdu.getOffsetCdata(), CARD_PIN_LENGTH);
+        
+        
+    }
  
     
     /***************************************************************************
@@ -355,6 +373,4 @@ public class SSINApplet extends Applet implements AppletEvent{
   
     }
 
-    
-    
 }
