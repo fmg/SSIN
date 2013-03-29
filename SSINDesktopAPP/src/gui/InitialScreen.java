@@ -5,9 +5,11 @@
 package gui;
 
 import encriptionLogic.CardMediator;
+import encriptionLogic.EncriptionModule;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.smartcardio.CardException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -105,6 +107,14 @@ public class InitialScreen extends javax.swing.JFrame {
             cardSelection_CB.setEnabled(false);
             cmAPI.setCardReader(cardSelection_CB.getSelectedIndex());
             
+            try{
+                EncriptionModule.getObjectInstance().loadInformationFromCard();
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(this,
+                               "Error loading keys",
+                               "Error",
+                               JOptionPane.ERROR_MESSAGE);
+            }
             
             this.setVisible(false);
             java.awt.EventQueue.invokeLater(new Runnable() {
