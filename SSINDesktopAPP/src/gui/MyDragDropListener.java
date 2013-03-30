@@ -25,7 +25,7 @@ import javax.swing.JTextField;
 class MyDragDropListener implements DropTargetListener {
     
     
-    EncriptionScreen guiScreen;
+    EncryptionScreen guiScreen;
     JTextField dropFile_Tlabel;
     
 
@@ -113,7 +113,7 @@ class MyDragDropListener implements DropTargetListener {
     public void dropActionChanged(DropTargetDragEvent event) {
     }
 
-    public MyDragDropListener(EncriptionScreen encriptionScreen, JTextField fileTF) {
+    public MyDragDropListener(EncryptionScreen encriptionScreen, JTextField fileTF) {
         guiScreen = encriptionScreen;
         dropFile_Tlabel = fileTF;
         

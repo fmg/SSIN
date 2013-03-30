@@ -5,7 +5,7 @@
 package gui;
 
 import encriptionLogic.CardMediator;
-import encriptionLogic.EncriptionModule;
+import encriptionLogic.EncryptionModule;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.smartcardio.CardException;
@@ -49,7 +49,7 @@ public class InitialScreen extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         cardSelection_CB = new javax.swing.JComboBox();
-        cardSelection_Button = new javax.swing.JToggleButton();
+        cardSelection_Button = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -67,10 +67,9 @@ public class InitialScreen extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(cardSelection_CB, 0, 455, Short.MAX_VALUE)
+                .addComponent(cardSelection_CB, 0, 478, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(cardSelection_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(cardSelection_Button))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -103,29 +102,33 @@ public class InitialScreen extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cardSelection_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cardSelection_ButtonActionPerformed
-        if(cardSelection_Button.isSelected()){
-            cardSelection_CB.setEnabled(false);
-            cmAPI.setCardReader(cardSelection_CB.getSelectedIndex());
-            
-            try{
-                EncriptionModule.getObjectInstance().loadInformationFromCard();
-            }catch(Exception ex){
-                JOptionPane.showMessageDialog(this,
-                               "Error loading keys",
-                               "Error",
-                               JOptionPane.ERROR_MESSAGE);
-            }
-            
-            this.setVisible(false);
-            java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new EncriptionScreen().setVisible(true);
-            }
-            });
-                       
-        }else{
-            cardSelection_CB.setEnabled(true);
+        
+        cmAPI.setCardReader(cardSelection_CB.getSelectedIndex());
+
+        try{
+            EncryptionModule.getObjectInstance().loadInformationFromCard();
+        }catch(CardException ex){
+            JOptionPane.showMessageDialog(this,
+                "Error communicating with card reader",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }catch(Exception ex){
+            JOptionPane.showMessageDialog(this,
+                "Error loading keys",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+            return;
         }
+
+        this.setVisible(false);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new EncryptionScreen().setVisible(true);
+            }
+        });
+
+        
     }//GEN-LAST:event_cardSelection_ButtonActionPerformed
 
     /**
@@ -163,7 +166,7 @@ public class InitialScreen extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToggleButton cardSelection_Button;
+    private javax.swing.JButton cardSelection_Button;
     private javax.swing.JComboBox cardSelection_CB;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
