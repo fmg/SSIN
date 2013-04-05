@@ -51,6 +51,7 @@ public class InitialScreen extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         cardSelection_CB = new javax.swing.JComboBox();
         cardSelection_Button = new javax.swing.JButton();
+        status_PB = new javax.swing.JProgressBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -62,15 +63,20 @@ public class InitialScreen extends javax.swing.JFrame {
             }
         });
 
+        status_PB.setFocusable(false);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(cardSelection_CB, 0, 478, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(cardSelection_Button))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(status_PB, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(cardSelection_CB, 0, 478, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(cardSelection_Button))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -79,7 +85,9 @@ public class InitialScreen extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cardSelection_CB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cardSelection_Button))
-                .addContainerGap(97, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(status_PB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -105,6 +113,7 @@ public class InitialScreen extends javax.swing.JFrame {
     private void cardSelection_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cardSelection_ButtonActionPerformed
         
         cmAPI.setCardReader(cardSelection_CB.getSelectedIndex());
+        status_PB.setIndeterminate(true);
 
         try{
             EncryptionModule.getObjectInstance().loadInformationFromCard();
@@ -113,12 +122,14 @@ public class InitialScreen extends javax.swing.JFrame {
                 "Error communicating with card reader",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
+            status_PB.setIndeterminate(false);
             return;
         }catch(Exception ex){
             JOptionPane.showMessageDialog(this,
                 "Error loading keys",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
+            status_PB.setIndeterminate(false);
             return;
         }
         
@@ -174,5 +185,6 @@ public class InitialScreen extends javax.swing.JFrame {
     private javax.swing.JButton cardSelection_Button;
     private javax.swing.JComboBox cardSelection_CB;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JProgressBar status_PB;
     // End of variables declaration//GEN-END:variables
 }
