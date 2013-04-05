@@ -40,8 +40,8 @@ public class ServerSimulator {
     //server variables   
     private final static String SERVER_KEYSTORE_FILE = "server.p12";
     private final static String SERVER_KEYSTORE_PASSWORD = "ssin2013";
-    private final static String CARD_PROTOCOL_ALGORITHM = "HmacSHA1";
-    private final static long PROTOCOL_MAX_TIMEOUT = 3;//3 mins to answer => 3*60*1000 => 180 000 ms
+    private final static String CARD_PROTOCOL_ALGORITHM = "SHA1withRSA";
+    private final static long PROTOCOL_MAX_TIMEOUT = 3*60*1000;//3 mins to answer => 3*60*1000 => 180 000 ms
     private final static int SECURE_RANDOM_LENGTH = 8;//long, DO NOT CHANGE!
     private SecureRandom randGen;
     private Certificate serverCert;
@@ -51,7 +51,7 @@ public class ServerSimulator {
     
     //card autentication
     private final static String CLIENT_PROTOCOL_SECRET_KEY_FILE = "client.cer";
-    private String cardResponseCorrectAnswer;
+    private String cardRequestToken;
     private long answerTimeout;
     private RSAPublicKey clientPredefinedPK;
     
@@ -65,7 +65,7 @@ public class ServerSimulator {
 
 
         randGen = new SecureRandom();
-        signing = Signature.getInstance("SHA1withRSA");
+        signing = Signature.getInstance(CARD_PROTOCOL_ALGORITHM);
 
 
         byte[] bytes = extractDataFromFile(new File(SERVER_KEYSTORE_FILE));
@@ -88,6 +88,14 @@ public class ServerSimulator {
         }
 
     }
+    
+    /**
+    * Cloning is not supported due to the object being singleton
+    */
+    @Override
+   public Object clone() throws CloneNotSupportedException {
+           throw new CloneNotSupportedException();
+   }
 
     public static ServerSimulator getObjectInstance() throws Exception {
         if (serverSim == null) {
@@ -115,13 +123,16 @@ public class ServerSimulator {
 
 
         String clientToken = "";
-        String timeStamp = String.valueOf(System.currentTimeMillis());
+        long currentTime = System.currentTimeMillis();
+        String timeStamp = String.valueOf(currentTime);
         System.out.println(timeStamp);
         String nounce = String.valueOf(ByteBuffer.wrap(
                 randGen.generateSeed(SECURE_RANDOM_LENGTH)).getLong());
         System.out.println(nounce);
 
         clientToken = timeStamp + nounce;
+        cardRequestToken = clientToken;
+        answerTimeout = currentTime + PROTOCOL_MAX_TIMEOUT;
 
         responseMap.put("status", STATUS_OK);
         responseMap.put("token", clientToken);
@@ -133,7 +144,7 @@ public class ServerSimulator {
 
     }
 
-    public boolean verifyToken(String token) {
+    public boolean verifyToken(byte[] token) {
 
         try {
             CertificateFactory crt_fctry = new CertificateFactory();
@@ -147,8 +158,16 @@ public class ServerSimulator {
         
             
             signing.initVerify(clientPredefinedPK);
-            signing.update(cardResponseCorrectAnswer.getBytes());
-            signing.verify(token.getBytes());
+            signing.update(cardRequestToken.getBytes());
+            boolean valid = signing.verify(token);
+            
+            if(!valid){
+                return false;
+            }
+            
+            if(answerTimeout < System.currentTimeMillis()) {
+                return false;
+            }
             
             return true;
 

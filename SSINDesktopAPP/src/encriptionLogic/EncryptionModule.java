@@ -78,6 +78,14 @@ public class EncryptionModule {
     
     
     /**
+    * Cloning is not supported due to the object being singleton
+    */
+    @Override
+   public Object clone() throws CloneNotSupportedException {
+           throw new CloneNotSupportedException();
+   }
+    
+    /**
      * 
      * @return
      * @throws Exception 
@@ -106,10 +114,7 @@ public class EncryptionModule {
     public void loadInformationFromCard() throws CardException, Exception {
         
         CardMediator cm = CardMediator.getObjectInstance();
-                
-        cm.openChannel();
-        cm.selectApplet();
-        
+
         
         List<SecretKey> keys = cm.getSecretKeys();
         

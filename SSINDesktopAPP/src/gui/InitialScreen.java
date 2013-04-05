@@ -4,13 +4,13 @@
  */
 package gui;
 
+import cardauth.CardAuthentication;
 import encriptionLogic.CardMediator;
 import encriptionLogic.EncryptionModule;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.smartcardio.CardException;
 import javax.swing.JOptionPane;
-import serverSimulation.ServerSimulator;
 
 /**
  *
@@ -112,18 +112,54 @@ public class InitialScreen extends javax.swing.JFrame {
 
     private void cardSelection_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cardSelection_ButtonActionPerformed
         
-        cmAPI.setCardReader(cardSelection_CB.getSelectedIndex());
         status_PB.setIndeterminate(true);
-
-        try{
-            EncryptionModule.getObjectInstance().loadInformationFromCard();
-        }catch(CardException ex){
+        
+        
+        try {
+            cmAPI.setCardReader(cardSelection_CB.getSelectedIndex());
+        } catch (Exception ex) {
+            Logger.getLogger(InitialScreen.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this,
                 "Error communicating with card reader",
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
             status_PB.setIndeterminate(false);
             return;
+        }
+
+        
+        String password = JOptionPane.showInputDialog("Please input the keystore password");
+
+        //authneticate card
+        CardAuthentication auth;
+        try {
+            auth = CardAuthentication.getObjectInstance();
+            auth.getKeyStoreForSSL(password);  
+            if(!auth.authenticateWithServer()){
+                JOptionPane.showMessageDialog(this,
+                "Error autenticating card with server",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+                status_PB.setIndeterminate(false);
+                return;
+            }
+              
+            
+        } catch (Exception ex) {
+            Logger.getLogger(InitialScreen.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this,
+                "Error autenticating: "+ ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+            status_PB.setIndeterminate(false);
+            return;
+        }
+        
+        
+        
+        
+        try{
+            EncryptionModule.getObjectInstance().loadInformationFromCard();
         }catch(Exception ex){
             JOptionPane.showMessageDialog(this,
                 "Error loading keys",
@@ -132,10 +168,7 @@ public class InitialScreen extends javax.swing.JFrame {
             status_PB.setIndeterminate(false);
             return;
         }
-        
-        
-        //ServerSimulator sem = new ServerSimulator();
-        
+
         
         this.setVisible(false);
         java.awt.EventQueue.invokeLater(new Runnable() {

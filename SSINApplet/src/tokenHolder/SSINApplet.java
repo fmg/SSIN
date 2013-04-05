@@ -379,6 +379,7 @@ public class SSINApplet extends Applet implements AppletEvent{
         if(receiveExtendedDataChaining(apdu, buffer, GET_AUTH_TOKEN_RESPONSE) == (byte)0){//when finishing receiving apdus
    
              signing.sign(transientBuffer, (short)0, transientBufferCurrentLenght, buffer, (short)0);
+             resetExtendedBufferState();
              apdu.setOutgoingAndSend((short)0, (short)(RSA_KEY_LENGTH/8));
              
          }
