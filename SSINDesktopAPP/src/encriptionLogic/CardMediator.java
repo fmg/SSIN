@@ -72,7 +72,7 @@ public class CardMediator {
     }
     
     
-    public static CardMediator getObjectInstance() throws CardException {
+    public synchronized static CardMediator getObjectInstance() throws CardException {
         if (cardAPI == null) {
                 cardAPI = new CardMediator();
         }

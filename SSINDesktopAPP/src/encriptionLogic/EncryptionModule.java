@@ -60,7 +60,13 @@ public class EncryptionModule {
     private static EncryptionModule encAPI;
     
     
-    
+    /**
+     * 
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws NoSuchProviderException
+     * @throws NoSuchPaddingException 
+     */
     private EncryptionModule() throws NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, NoSuchPaddingException {
         
         Security.addProvider(new BouncyCastleProvider());
@@ -71,8 +77,12 @@ public class EncryptionModule {
     }
     
     
-    
-    public static EncryptionModule getObjectInstance() throws Exception  {
+    /**
+     * 
+     * @return
+     * @throws Exception 
+     */
+    public static synchronized EncryptionModule getObjectInstance() throws Exception  {
         if (encAPI == null) {
                 encAPI = new EncryptionModule();
         }
@@ -81,6 +91,18 @@ public class EncryptionModule {
     
     
     
+    
+    
+    /********************************************
+     *               Key Loading                *
+     *******************************************/
+    
+    
+    /**
+     * 
+     * @throws CardException
+     * @throws Exception 
+     */
     public void loadInformationFromCard() throws CardException, Exception {
         
         CardMediator cm = CardMediator.getObjectInstance();
@@ -102,42 +124,24 @@ public class EncryptionModule {
     }
     
     
-    
-    private byte[] encript(byte[] fileContent){
-        try {
-            return encrypter.doFinal(fileContent);
-        } catch(Exception ex){
-            return new byte[0];
-        }
-        
-    }
+
     
     
-    
-    private byte[] decript(byte[] encriptedFileContent){
-        try {
-            return decrypter.doFinal(encriptedFileContent);
-        } catch (Exception ex) {
-            return new byte[0];
-        } 
-    }
+    /********************************************
+     *      Encyption and Signature signing     *
+     *******************************************/
     
     
-    
-    private byte[] sign(byte[] fileContent){
-        return signing.doFinal(fileContent);
-    }
-    
-    
-    private boolean verifySignature(byte[] fileContent, byte[] signatureValue){
-        
-        byte[] newSig = signing.doFinal(fileContent);
-        
-        return Arrays.equals(signatureValue, newSig);
-    }
-    
-    
-    public boolean encryptFile(String filePath, String encryptionPathFolder, String metadataKeywords, JTextArea outputConsole){
+    /**
+     * 
+     * @param filePath
+     * @param encryptionPathFolder
+     * @param metadataKeywords
+     * @param deleteFile
+     * @param outputConsole
+     * @return 
+     */
+    public boolean encryptFile(String filePath, String encryptionPathFolder, String metadataKeywords, boolean deleteFile, JTextArea outputConsole){
         try {
             outputConsole.setText("");
             outputConsole.append("Creating files:\n");
@@ -166,16 +170,31 @@ public class EncryptionModule {
                 
             }
             
+            if(deleteFile){
+                originalFile.delete();
+                outputConsole.append("Deleted Original File");
+            }
+            
             outputConsole.append("Operation Completed");
             return true;
         } catch (Exception ex){
+            outputConsole.append("Error!\n"+ ex.getMessage());
             return false;
         }
     }
     
     
     
-    public boolean encriptAndSignFile(String filePath, String encryptionPathFolder, String metadataKeywords, JTextArea outputConsole){
+    /**
+     * 
+     * @param filePath
+     * @param encryptionPathFolder
+     * @param metadataKeywords
+     * @param deleteFile
+     * @param outputConsole
+     * @return 
+     */
+    public boolean encriptAndSignFile(String filePath, String encryptionPathFolder, String metadataKeywords, boolean deleteFile, JTextArea outputConsole){
         try {
             outputConsole.setText("");
             outputConsole.append("Creating files:\n");
@@ -186,17 +205,17 @@ public class EncryptionModule {
             
             
             //encryption
-            String encryptionFilePath = encryptionPathFolder +  System.getProperty("file.separator") + originalFile.getName();
+            String encDestinationFile = encryptionPathFolder +  System.getProperty("file.separator") + originalFile.getName();
             outputConsole.append(originalFile.getName() + "(Encrypted)\n");
-            File encrypdestinationFile = new File(encryptionFilePath);
+            File encrypdestinationFile = new File(encDestinationFile);
             writeDataToFile(encrypdestinationFile ,encript(originalFileContent));
             
             
             //signature
             String signatureFileName = encryptionPathFolder +  System.getProperty("file.separator") + fileName + ".signature";
             outputConsole.append(fileName + ".signature\n");
-            File SigDestinationFile = new File(signatureFileName);
-            writeDataToFile(SigDestinationFile ,sign(originalFileContent));
+            File sigDestinationFile = new File(signatureFileName);
+            writeDataToFile(sigDestinationFile ,sign(originalFileContent));
             
             
             byte[] metadataContent = createMetadataFile(metadataKeywords);
@@ -206,17 +225,31 @@ public class EncryptionModule {
                 String metadataFilePath = encryptionPathFolder +  System.getProperty("file.separator") + fileName + ".metadata";
                 writeDataToFile(new File(metadataFilePath), metadataContent);
                 
+            }  
+            
+            if(deleteFile){
+                originalFile.delete();
+                outputConsole.append("Deleted Original File");
             }
+            
             
             outputConsole.append("Operation Completed");
             return true;
         } catch (Exception ex){
+            outputConsole.append("Error!\n"+ ex.getMessage());
             return false;
         }
     } 
     
     
     
+    /**
+     * 
+     * @param filePath
+     * @param encryptionPathFolder
+     * @param outputConsole
+     * @return 
+     */
     public boolean signFile(String filePath, String encryptionPathFolder, JTextArea outputConsole){
         try {
             outputConsole.setText("");
@@ -235,11 +268,41 @@ public class EncryptionModule {
             outputConsole.append("Operation Completed");
             return true;
         } catch (Exception ex){
+            outputConsole.append("Error!\n"+ ex.getMessage());
             return false;
         }
     }
        
     
+    
+    
+    
+    /********************************************
+     * Decryption and Signature verification    *
+     *******************************************/
+    
+    /**
+     * 
+     * @param fileContent
+     * @param signatureValue
+     * @return 
+     */
+    private boolean verifySignature(byte[] fileContent, byte[] signatureValue){
+        
+        byte[] newSig = signing.doFinal(fileContent);
+        
+        return Arrays.equals(signatureValue, newSig);
+    }
+
+    
+    
+    /**
+     * 
+     * @param filePath
+     * @param decryptionFolder
+     * @param outputConsole
+     * @return 
+     */
     public boolean decryptAndVerify(String filePath, String decryptionFolder, JTextArea outputConsole){
         
         try {
@@ -276,6 +339,7 @@ public class EncryptionModule {
             outputConsole.append("Operation Completed");
             return true;
         } catch (Exception ex){
+            outputConsole.append("Error!\n"+ ex.getMessage());
             return false;
         }
         
@@ -283,6 +347,12 @@ public class EncryptionModule {
     
     
     
+    /**
+     * 
+     * @param filePath
+     * @param outputConsole
+     * @return 
+     */
     public boolean verifyFile(String filePath, JTextArea outputConsole){
         
         
@@ -313,14 +383,20 @@ public class EncryptionModule {
             outputConsole.append("Operation Completed");
             return true;
         } catch (Exception ex){
+            outputConsole.append("Error!\n"+ ex.getMessage());
             return false;
         }
-        
-        
     }
     
     
     
+    /**
+     * 
+     * @param filePath
+     * @param decryptionFolder
+     * @param outputConsole
+     * @return 
+     */
     public boolean decryptFile(String filePath, String decryptionFolder, JTextArea outputConsole){
          try {
             outputConsole.setText("");
@@ -338,9 +414,13 @@ public class EncryptionModule {
             outputConsole.append("Operation Completed");
             return true;
         } catch (Exception ex){
+            outputConsole.append("Error!\n"+ ex.getMessage());
             return false;
         }
     }
+    
+    
+    
     
     
     /************************************
@@ -348,6 +428,58 @@ public class EncryptionModule {
     *************************************/
     
     
+    /**
+     * 
+     * @param fileContent
+     * @return 
+     */
+    private byte[] encript(byte[] fileContent){
+        try {
+            return encrypter.doFinal(fileContent);
+        } catch(Exception ex){
+            return new byte[0];
+        }
+        
+    }
+    
+    
+    
+    /**
+     * 
+     * @param encriptedFileContent
+     * @return 
+     */
+    private byte[] decript(byte[] encriptedFileContent){
+        try {
+            return decrypter.doFinal(encriptedFileContent);
+        } catch (Exception ex) {
+            return new byte[0];
+        } 
+    }
+    
+    
+    
+    /**
+     * 
+     * @param fileContent
+     * @return 
+     */
+    private byte[] sign(byte[] fileContent){
+        return signing.doFinal(fileContent);
+    }
+    
+    
+    
+    /**
+     * 
+     * @param keywords
+     * @return
+     * @throws ParserConfigurationException
+     * @throws SAXException
+     * @throws IOException
+     * @throws TransformerConfigurationException
+     * @throws TransformerException 
+     */
     private byte[] createMetadataFile(String keywords) throws ParserConfigurationException, SAXException, IOException, TransformerConfigurationException, TransformerException{
         
         String[] splittedKeywords =  keywords.split(";");
@@ -397,6 +529,13 @@ public class EncryptionModule {
     
     
     
+    /**
+     * 
+     * @param filePath
+     * @param content
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
     private void writeDataToFile(File filePath, byte[] content) throws FileNotFoundException, IOException{
          FileOutputStream fos = new FileOutputStream(filePath);
          
@@ -407,6 +546,13 @@ public class EncryptionModule {
     
     
     
+    /**
+     * 
+     * @param filePath
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
     private byte[] extractDataFromFile(File filePath) throws FileNotFoundException, IOException{
         
         
@@ -427,8 +573,5 @@ public class EncryptionModule {
     }
     
     
-    
-    
-       
-    
+
 }

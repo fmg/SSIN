@@ -98,6 +98,7 @@ public class EncryptionScreen extends javax.swing.JFrame {
         jPanel8 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         decryp_outputConsole_TA = new javax.swing.JTextArea();
+        deleteOriFile_CKB = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -220,9 +221,9 @@ public class EncryptionScreen extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(metadataKeywords_TF, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -233,7 +234,7 @@ public class EncryptionScreen extends javax.swing.JFrame {
                 .addComponent(metadataKeywords_TF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel6)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         encrypt_Button.setText("Do it!");
@@ -258,15 +259,15 @@ public class EncryptionScreen extends javax.swing.JFrame {
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -396,7 +397,7 @@ public class EncryptionScreen extends javax.swing.JFrame {
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
@@ -406,6 +407,14 @@ public class EncryptionScreen extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
+
+        deleteOriFile_CKB.setText("Delete original file");
+        deleteOriFile_CKB.setEnabled(false);
+        deleteOriFile_CKB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteOriFile_CKBActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -422,11 +431,13 @@ public class EncryptionScreen extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(encrypt_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(deleteOriFile_CKB)
+                            .addComponent(encrypt_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 10, Short.MAX_VALUE)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -438,7 +449,7 @@ public class EncryptionScreen extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(0, 34, Short.MAX_VALUE)
+                                .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 794, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(25, 25, 25))
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -451,8 +462,8 @@ public class EncryptionScreen extends javax.swing.JFrame {
                         .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(decrypt_Button)
-                        .addGap(154, 154, 154)
-                        .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -468,6 +479,9 @@ public class EncryptionScreen extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(deleteOriFile_CKB)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(encrypt_Button)
                         .addGap(63, 63, 63))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -506,8 +520,7 @@ public class EncryptionScreen extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -559,16 +572,18 @@ public class EncryptionScreen extends javax.swing.JFrame {
     private void encrypt_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_encrypt_ButtonActionPerformed
               
         boolean success = false;
+        boolean deleteFile = deleteOriFile_CKB.isSelected();
+        
         
         switch(encryption_option){
             
             case SIGNATURE_ONLY:    success = encAPI.signFile(dropFile_TF.getText(), encryptionDestinationFolder_TF.getText(), enc_outputConsole_TA);
                                     break;
                 
-            case ENCRYPTION_ONLY:   success = encAPI.encryptFile(dropFile_TF.getText(), encryptionDestinationFolder_TF.getText(), metadataKeywords_TF.getText(), enc_outputConsole_TA);
+            case ENCRYPTION_ONLY:   success = encAPI.encryptFile(dropFile_TF.getText(), encryptionDestinationFolder_TF.getText(), metadataKeywords_TF.getText(), deleteFile, enc_outputConsole_TA);
                                     break;
                 
-            case ENCRYPTION_AND_SIGNATURE:  success = encAPI.encriptAndSignFile(dropFile_TF.getText(), encryptionDestinationFolder_TF.getText(), metadataKeywords_TF.getText(), enc_outputConsole_TA);
+            case ENCRYPTION_AND_SIGNATURE:  success = encAPI.encriptAndSignFile(dropFile_TF.getText(), encryptionDestinationFolder_TF.getText(), metadataKeywords_TF.getText(), deleteFile, enc_outputConsole_TA);
                                             break;
             
             default: break;
@@ -590,14 +605,21 @@ public class EncryptionScreen extends javax.swing.JFrame {
 
     private void enc_sigonly_RBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enc_sigonly_RBActionPerformed
         encryption_option = SIGNATURE_ONLY;
+        deleteOriFile_CKB.setSelected(false);
+        deleteOriFile_CKB.setEnabled(false);
+
     }//GEN-LAST:event_enc_sigonly_RBActionPerformed
 
     private void enc_enconly_RBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enc_enconly_RBActionPerformed
         encryption_option = ENCRYPTION_ONLY;
+        deleteOriFile_CKB.setSelected(true);
+        deleteOriFile_CKB.setEnabled(true);
     }//GEN-LAST:event_enc_enconly_RBActionPerformed
 
     private void enc_encsig_RBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enc_encsig_RBActionPerformed
         encryption_option = ENCRYPTION_AND_SIGNATURE;
+        deleteOriFile_CKB.setSelected(true);
+        deleteOriFile_CKB.setEnabled(true);
     }//GEN-LAST:event_enc_encsig_RBActionPerformed
 
     private void encDropFile_TFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_encDropFile_TFActionPerformed
@@ -678,6 +700,12 @@ public class EncryptionScreen extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_decryptionDestinationFolder_ButtonActionPerformed
 
+    private void deleteOriFile_CKBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteOriFile_CKBActionPerformed
+
+        
+        
+    }//GEN-LAST:event_deleteOriFile_CKBActionPerformed
+
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -691,6 +719,7 @@ public class EncryptionScreen extends javax.swing.JFrame {
     private javax.swing.JButton decrypt_Button;
     private javax.swing.JButton decryptionDestinationFolder_Button;
     private javax.swing.JTextField decryptionDestinationFolder_TF;
+    private javax.swing.JCheckBox deleteOriFile_CKB;
     private javax.swing.JTextField dropFile_TF;
     private javax.swing.JTextField encDropFile_TF;
     private javax.swing.JPanel encJPanel;

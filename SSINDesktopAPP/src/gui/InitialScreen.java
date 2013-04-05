@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.smartcardio.CardException;
 import javax.swing.JOptionPane;
+import serverSimulation.ServerSimulator;
 
 /**
  *
@@ -120,14 +121,18 @@ public class InitialScreen extends javax.swing.JFrame {
                 JOptionPane.ERROR_MESSAGE);
             return;
         }
-
+        
+        
+        //ServerSimulator sem = new ServerSimulator();
+        
+        
         this.setVisible(false);
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new EncryptionScreen().setVisible(true);
             }
         });
-
+        
         
     }//GEN-LAST:event_cardSelection_ButtonActionPerformed
 
