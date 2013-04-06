@@ -208,8 +208,9 @@ public class SSINApplet extends Applet implements AppletEvent{
             ISOException.throwIt(SW_MALFORMED_MSG);
         }
         
-        
-        cardPin.update(buffer, apdu.getOffsetCdata(), PIN_LENGTH);
+        if(cardPin.getTriesRemaining() == PIN_LIMIT && !cardPin.isValidated()){
+            cardPin.update(buffer, apdu.getOffsetCdata(), PIN_LENGTH);
+        }
         
         
     }
