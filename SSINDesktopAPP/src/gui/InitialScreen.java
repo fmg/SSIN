@@ -168,7 +168,12 @@ public class InitialScreen extends javax.swing.JFrame {
             status_PB.setIndeterminate(false);
             return;
         }
-
+        
+        try {
+            cmAPI.closeChannel();//doenst matter if it fails, doest represent any security concern
+        } catch (CardException ex) {
+            Logger.getLogger(InitialScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         this.setVisible(false);
         java.awt.EventQueue.invokeLater(new Runnable() {

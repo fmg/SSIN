@@ -169,6 +169,10 @@ public class ServerSimulator {
                 return false;
             }
             
+            //reset information
+            cardRequestToken = "";
+            answerTimeout = System.currentTimeMillis();
+            
             return true;
 
         } catch (Exception ex) {
