@@ -50,7 +50,7 @@ public class ServerSimulator {
     
     
     //card autentication
-    private final static String CLIENT_PROTOCOL_SECRET_KEY_FILE = "client.cer";
+    private final static String CLIENT_PROTOCOL_SECRET_KEY_FILE = "clientCardAuth.cer";
     private String cardRequestToken;
     private long answerTimeout;
     private RSAPublicKey clientPredefinedPK;

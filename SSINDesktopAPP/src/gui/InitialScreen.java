@@ -170,7 +170,7 @@ public class InitialScreen extends javax.swing.JFrame {
         }
         
         try {
-            cmAPI.closeChannel();//doenst matter if it fails, doest represent any security concern
+            cmAPI.closeChannel();//doesnt matter if it fails, doesnt represent any security concern
         } catch (CardException ex) {
             Logger.getLogger(InitialScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
